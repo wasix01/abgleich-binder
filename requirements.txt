@@ -1,4 +1,4 @@
-abgleich-pkg-wasix==0.3.12  # via -r requirements.in
+
 agate-dbf==0.2.2          # via csvkit
 agate-excel==0.2.3        # via csvkit
 agate-sql==0.5.5          # via csvkit
