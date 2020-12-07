@@ -11,6 +11,6 @@ python-Levenshtein
 SQLAlchemy
 xlrd
 psutil
-
 #my module
-abgleich_pkg_wasix >= 0.3.10            # Minimum version 0.3.10
+abgleich_pkg_wasix
+
