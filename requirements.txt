@@ -1,0 +1,16 @@
+#general requirements:
+csvkit
+fuzzywuzzy
+numpy
+p-tqdm
+tqdm
+pandas
+psycopg2-binary
+pylint
+python-Levenshtein
+SQLAlchemy
+xlrd
+psutil
+
+#my module
+abgleich_pkg_wasix >= 0.3.10            # Minimum version 0.3.10
