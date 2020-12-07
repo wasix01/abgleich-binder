@@ -1,0 +1,645 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Introduction to Abgleich\n",
+    "## ist cool with NB"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Open and type:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "try:\n",
+    "    import abgleich_pkg\n",
+    "except:\n",
+    "    import sys\n",
+    "    import subprocess\n",
+    "    subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', '--index-url https://test.pypi.org/simple/', '--no-deps', 'abgleich-pkg-wasix'])\n",
+    "    import abgleich_pkg\n",
+    "\n",
+    "import os\n",
+    "import logging\n",
+    "from abgleich_pkg.abgleich import setlogging, prepareParams, checkDebugEnv, printGlobals, setupEnvironment, write2CSV, writeObj, write2DF, write2Database, prepareFilterCSV, writeObj, getTuples, calcvalues, \\\n",
+    "                                  no_abacus, no_names, baseDataDir, tuplefn, tablename, chunksize, agents, threshold, filterOnAlgo, op, dbconnstr, mymain, main"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "simple check if everything is fine:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[2020-12-07 19:13:47,380] {abgleich.py:724} WARNING - logger: <Logger LOGGER_NAME (DEBUG)>\n",
+      "[2020-12-07 19:13:47,382] {abgleich.py:93} INFO - running with:\n",
+      "[2020-12-07 19:13:47,383] {abgleich.py:94} INFO -  agents      : None\n",
+      "[2020-12-07 19:13:47,383] {abgleich.py:95} INFO -  chunks      : None\n",
+      "[2020-12-07 19:13:47,384] {abgleich.py:96} INFO -  abacus      : None\n",
+      "[2020-12-07 19:13:47,385] {abgleich.py:97} INFO -  names       : None\n",
+      "[2020-12-07 19:13:47,386] {abgleich.py:98} INFO -  algo        : None\n",
+      "[2020-12-07 19:13:47,386] {abgleich.py:99} INFO -  calcTuples  : None\n",
+      "[2020-12-07 19:13:47,387] {abgleich.py:100} INFO -  tuplefn     : None\n",
+      "[2020-12-07 19:13:47,387] {abgleich.py:101} INFO -  threshold   : None\n",
+      "[2020-12-07 19:13:47,388] {abgleich.py:102} INFO -  filterOnAlgo: None\n",
+      "[2020-12-07 19:13:47,388] {abgleich.py:103} INFO -  op          : None\n",
+      "[2020-12-07 19:13:47,389] {abgleich.py:104} INFO -  tablename   : None\n",
+      "[2020-12-07 19:13:47,390] {abgleich.py:105} INFO -  dbconnstr   : None\n",
+      "[2020-12-07 19:13:47,391] {abgleich.py:106} INFO -  baseDataDir : ./data/\n",
+      "[2020-12-07 19:13:47,391] {abgleich.py:107} INFO -  xlfnAbgleich: None\n"
+     ]
+    }
+   ],
+   "source": [
+    "setlogging()\n",
+    "printGlobals()\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "oh yeah cool! U see somthing???"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now make a tempdir for working and storing results. In a NB u r usually in the *root - dir*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "created temporary directory <TemporaryDirectory '/tmp/tmpyqz17qkd'>\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "[]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import tempfile\n",
+    "tmpdirname = tempfile.TemporaryDirectory()\n",
+    "print('created temporary directory', tmpdirname)\n",
+    "os.chdir(tmpdirname.name)\n",
+    "os.listdir(tmpdirname.name)\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "in this directory, **setup your environment**\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[2020-12-07 19:14:09,391] {abgleich.py:93} INFO - running with:\n",
+      "[2020-12-07 19:14:09,392] {abgleich.py:94} INFO -  agents      : None\n",
+      "[2020-12-07 19:14:09,393] {abgleich.py:95} INFO -  chunks      : None\n",
+      "[2020-12-07 19:14:09,393] {abgleich.py:96} INFO -  abacus      : None\n",
+      "[2020-12-07 19:14:09,394] {abgleich.py:97} INFO -  names       : None\n",
+      "[2020-12-07 19:14:09,394] {abgleich.py:98} INFO -  algo        : None\n",
+      "[2020-12-07 19:14:09,395] {abgleich.py:99} INFO -  calcTuples  : None\n",
+      "[2020-12-07 19:14:09,396] {abgleich.py:100} INFO -  tuplefn     : None\n",
+      "[2020-12-07 19:14:09,396] {abgleich.py:101} INFO -  threshold   : None\n",
+      "[2020-12-07 19:14:09,397] {abgleich.py:102} INFO -  filterOnAlgo: None\n",
+      "[2020-12-07 19:14:09,397] {abgleich.py:103} INFO -  op          : None\n",
+      "[2020-12-07 19:14:09,398] {abgleich.py:104} INFO -  tablename   : None\n",
+      "[2020-12-07 19:14:09,399] {abgleich.py:105} INFO -  dbconnstr   : None\n",
+      "[2020-12-07 19:14:09,399] {abgleich.py:106} INFO -  baseDataDir : ./data/\n",
+      "[2020-12-07 19:14:09,400] {abgleich.py:107} INFO -  xlfnAbgleich: None\n"
+     ]
+    }
+   ],
+   "source": [
+    "printGlobals()\n",
+    "setupEnvironment()\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['/tmp/tmpyqz17qkd/input/Abgleich_KUSY_Vorlage.xlsx',\n",
+       " '/tmp/tmpyqz17qkd/docker/docker-compose.yml',\n",
+       " '/tmp/tmpyqz17qkd/docker/do_csv_upload.sh']"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "os.listdir(tmpdirname.name)\n",
+    "[os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(tmpdirname.name)) for f in fn]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[2020-12-07 19:14:14,449] {abgleich.py:290} INFO - ---------------------------------------------\n",
+      "[2020-12-07 19:14:14,450] {abgleich.py:295} INFO - Agents(32)  OK. CPUs(32)\n",
+      "[2020-12-07 19:14:14,450] {abgleich.py:298} INFO - ---------------------------------------------\n",
+      "[2020-12-07 19:14:14,451] {abgleich.py:300} DEBUG - svmem(total=67384184832, available=58977665024, percent=12.5, used=7520497664, free=52436328448, active=10213400576, inactive=3116634112, buffers=1035055104, cached
+=6392303616, shared=310341632, slab=1190252544)\n",
+      "[2020-12-07 19:14:14,452] {abgleich.py:301} DEBUG - sswap(total=68719472640, used=0, free=68719472640, percent=0.0, sin=0, sout=0)\n",
+      "[2020-12-07 19:14:14,453] {abgleich.py:311} WARNING - Available memory OK! (112.8G)\n",
+      "[2020-12-07 19:14:14,453] {abgleich.py:313} INFO - ---------------------------------------------\n",
+      "[2020-12-07 19:14:14,454] {abgleich.py:753} DEBUG - Go!\n",
+      "[2020-12-07 19:14:14,455] {abgleich.py:93} INFO - running with:\n",
+      "[2020-12-07 19:14:14,455] {abgleich.py:94} INFO -  agents      : 32\n",
+      "[2020-12-07 19:14:14,456] {abgleich.py:95} INFO -  chunks      : 10000\n",
+      "[2020-12-07 19:14:14,456] {abgleich.py:96} INFO -  abacus      : 2\n",
+      "[2020-12-07 19:14:14,457] {abgleich.py:97} INFO -  names       : 20\n",
+      "[2020-12-07 19:14:14,457] {abgleich.py:98} INFO -  algo        : all\n",
+      "[2020-12-07 19:14:14,458] {abgleich.py:99} INFO -  calcTuples  : True\n",
+      "[2020-12-07 19:14:14,458] {abgleich.py:100} INFO -  tuplefn     : comparison.tuples\n",
+      "[2020-12-07 19:14:14,459] {abgleich.py:101} INFO -  threshold   : None\n",
+      "[2020-12-07 19:14:14,459] {abgleich.py:102} INFO -  filterOnAlgo: None\n",
+      "[2020-12-07 19:14:14,460] {abgleich.py:103} INFO -  op          : None\n",
+      "[2020-12-07 19:14:14,461] {abgleich.py:104} INFO -  tablename   : comparison\n",
+      "[2020-12-07 19:14:14,461] {abgleich.py:105} INFO -  dbconnstr   : postgresql+psycopg2://postgres:1qa2ws@localhost:15432/mydb\n",
+      "[2020-12-07 19:14:14,461] {abgleich.py:106} INFO -  baseDataDir : ./data/\n",
+      "[2020-12-07 19:14:14,462] {abgleich.py:107} INFO -  xlfnAbgleich: ./input/Abgleich_KUSY_Vorlage.xlsx\n",
+      "[2020-12-07 19:14:14,462] {abgleich.py:524} INFO - begin getTuples...\n",
+      "[2020-12-07 19:14:16,526] {abgleich.py:459} INFO - sortabacus: 2\n",
+      "[2020-12-07 19:14:18,717] {abgleich.py:444} INFO - sortnames: 59\n",
+      "[2020-12-07 19:14:18,727] {abgleich.py:500} INFO - t elapsed load  : 4\n",
+      "[2020-12-07 19:14:18,728] {abgleich.py:501} INFO - t elapsed tuples: 0\n",
+      "[2020-12-07 19:14:18,728] {abgleich.py:502} INFO - tuples          : 118\n",
+      "[2020-12-07 19:14:18,729] {abgleich.py:527} INFO - write tuples...\n",
+      "[2020-12-07 19:14:18,730] {abgleich.py:666} DEBUG - >>><class 'list'>: writeObj in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:641\n",
+      "[2020-12-07 19:14:18,730] {abgleich.py:644} DEBUG - highest protocol: 5\n",
+      "[2020-12-07 19:14:18,731] {abgleich.py:533} INFO - 118 2 <class 'list'>\n",
+      "[2020-12-07 19:14:18,732] {abgleich.py:534} INFO - end getTuples.\n",
+      "[2020-12-07 19:14:18,732] {abgleich.py:540} INFO - begin calc...\n",
+      "[2020-12-07 19:14:19,798] {abgleich.py:552} INFO - 118 10 <class 'list'>\n",
+      "[2020-12-07 19:14:19,799] {abgleich.py:553} INFO - t elapsed calc : 0\n",
+      "[2020-12-07 19:14:19,800] {abgleich.py:666} DEBUG - >>><class 'list'>: writeObj in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:641\n",
+      "[2020-12-07 19:14:19,800] {abgleich.py:644} DEBUG - highest protocol: 5\n",
+      "[2020-12-07 19:14:19,802] {abgleich.py:559} INFO - write csv...\n",
+      "[2020-12-07 19:14:19,802] {abgleich.py:602} INFO - filter datasets: 0\n",
+      "[2020-12-07 19:14:19,803] {abgleich.py:603} INFO - t elapsed write: 0\n",
+      "[2020-12-07 19:14:19,803] {abgleich.py:604} INFO - result datasets: 118\n",
+      "[2020-12-07 19:14:19,803] {abgleich.py:666} DEBUG - >>><class 'list'>: writeObj in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:641\n",
+      "[2020-12-07 19:14:19,803] {abgleich.py:644} DEBUG - highest protocol: 5\n",
+      "[2020-12-07 19:14:19,805] {abgleich.py:666} DEBUG - >>><class 'list'>: write2CSV in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:631\n",
+      "[2020-12-07 19:14:19,812] {abgleich.py:666} DEBUG - >>>Begin w2df: write2DF in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:672\n",
+      "[2020-12-07 19:14:19,812] {abgleich.py:676} INFO - write df\n",
+      "[2020-12-07 19:14:19,815] {abgleich.py:678} INFO -    levi-C_Dist  levi-Dist_Lower  levi-Dist_Norm  levi-Dist_Lower_Norm  \\\n",
+      "0           42               36              39                    34   \n",
+      "1           33               27              32                    27   \n",
+      "2           30               30              30                    30   \n",
+      "3           34               34              31                    31   \n",
+      "4           29               29              29                    29   \n",
+      "\n",
+      "   levi-Dist  levi-Ratio  fuzzy-Ratio  fuzzy-Partial_Ratio  \\\n",
+      "0         42         0.2           31                   33   \n",
+      "1         33         0.2           34                   35   \n",
+      "2         30         0.3           35                   36   \n",
+      "3         34         0.3           31                   33   \n",
+      "4         29         0.2           25                   29   \n",
+      "\n",
+      "   fuzzy-Token_Sort_Ratio  fuzzy-Token_Set_Ratio  \\\n",
+      "0                      28                     28   \n",
+      "1                      35                     35   \n",
+      "2                      33                     33   \n",
+      "3                      32                     32   \n",
+      "4                      27                     27   \n",
+      "\n",
+      "                                              Names  \\\n",
+      "0  \"DER RHEINBERGER\" Besitzgesellschaft mbH & Co.KG   \n",
+      "1                \"DER RHEINBERGER\" Verwaltungs-GmbH   \n",
+      "2                 \"Der Radevormwalder\" Omnibus GmbH   \n",
+      "3         \"Eigenbetrieb Abwasser\" Stadt Wittichenau   \n",
+      "4                      \"Eigenbetrieb Großröhrsdorf\"   \n",
+      "\n",
+      "                             AbacusName  \n",
+      "0  Nordrhein-WestfalenFinanzministerium  \n",
+      "1  Nordrhein-WestfalenFinanzministerium  \n",
+      "2  Nordrhein-WestfalenFinanzministerium  \n",
+      "3  Nordrhein-WestfalenFinanzministerium  \n",
+      "4  Nordrhein-WestfalenFinanzministerium  \n",
+      "<class 'pandas.core.frame.DataFrame'>\n",
+      "RangeIndex: 118 entries, 0 to 117\n",
+      "Data columns (total 12 columns):\n",
+      " #   Column                  Non-Null Count  Dtype  \n",
+      "---  ------                  --------------  -----  \n",
+      " 0   levi-C_Dist             118 non-null    int64  \n",
+      " 1   levi-Dist_Lower         118 non-null    int64  \n",
+      " 2   levi-Dist_Norm          118 non-null    int64  \n",
+      " 3   levi-Dist_Lower_Norm    118 non-null    int64  \n",
+      " 4   levi-Dist               118 non-null    int64  \n",
+      " 5   levi-Ratio              118 non-null    float64\n",
+      " 6   fuzzy-Ratio             118 non-null    int64  \n",
+      " 7   fuzzy-Partial_Ratio     118 non-null    int64  \n",
+      " 8   fuzzy-Token_Sort_Ratio  118 non-null    int64  \n",
+      " 9   fuzzy-Token_Set_Ratio   118 non-null    int64  \n",
+      " 10  Names                   118 non-null    object \n",
+      " 11  AbacusName              118 non-null    object \n",
+      "dtypes: float64(1), int64(9), object(2)\n",
+      "memory usage: 11.2+ KB\n",
+      "[2020-12-07 19:14:19,830] {abgleich.py:679} DEBUG - None\n",
+      "[2020-12-07 19:14:19,830] {abgleich.py:666} DEBUG - >>><class 'pandas.core.frame.DataFrame'>: writeObj in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:641\n",
+      "[2020-12-07 19:14:19,831] {abgleich.py:644} DEBUG - highest protocol: 5\n",
+      "[2020-12-07 19:14:19,832] {abgleich.py:666} DEBUG - >>>End w2df: write2DF in /home/wasi/anaconda3/envs/Abgleich/lib/python3.8/site-packages/abgleich_pkg/abgleich.py:672\n",
+      "Current directory is- /tmp/tmpyqz17qkd/docker\n",
+      "run do_csv_upload.sh manually!\n"
+     ]
+    }
+   ],
+   "source": [
+    "mymain()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Now lets see what we got?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['/tmp/tmpyqz17qkd/input/Abgleich_KUSY_Vorlage.xlsx',\n",
+       " '/tmp/tmpyqz17qkd/data/comparison.csv',\n",
+       " '/tmp/tmpyqz17qkd/data/comparison.result',\n",
+       " '/tmp/tmpyqz17qkd/data/comparison.tuples',\n",
+       " '/tmp/tmpyqz17qkd/data/comparison.df',\n",
+       " '/tmp/tmpyqz17qkd/data/comparison.finallist',\n",
+       " '/tmp/tmpyqz17qkd/docker/docker-compose.yml',\n",
+       " '/tmp/tmpyqz17qkd/docker/do_csv_upload.sh']"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "[os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(tmpdirname.name)) for f in fn]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Result CSV:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Idx    levi-C_Dist   levi-Dist_Lower levi-Dist_Norm  levi-Dist_Lower_Norm levi-Dist   levi-Ratio   fuzzy-Ratio  fuzzy-Partial_Ratio fuzzy-Token_Sort_Ratio fuzzy-Token_Set_Ratio   Names                                
+                                                                     AbacusName                                                                                                  \n",
+      "0      42            36              39              34                   42          0.2          31           33                  28                     28                      \"DER RHEINBERGER\" Besitzgesellschaf
+t mbH & Co.KG                                                          Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "1      33            27              32              27                   33          0.2          34           35                  35                     35                      \"DER RHEINBERGER\" Verwaltungs-GmbH 
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "2      30            30              30              30                   30          0.3          35           36                  33                     33                      \"Der Radevormwalder\" Omnibus GmbH  
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "3      34            34              31              31                   34          0.3          31           33                  32                     32                      \"Eigenbetrieb Abwasser\" Stadt Witti
+chenau                                                                 Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "4      29            29              29              29                   29          0.2          25           29                  27                     27                      \"Eigenbetrieb Großröhrsdorf\"       
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "5      32            32              31              31                   32          0.3          31           31                  32                     32                      \"Elstertal\" Infraprojekt GmbH  Gera
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "6      62            62              53              53                   62          0.3          29           36                  34                     34                      \"Haus am Karswald\" Wohnstätte zur F
+örderung und Pflege behinderter Menschen                               Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "7      34            32              34              32                   34          0.2          20           27                  20                     20                      \"IWW Nord GmbH\"                    
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "8      49            49              44              44                   49          0.3          33           33                  37                     37                      \"ImmoDienst Uckermark\" Gesellschaft
+ mit beschränkter Haftung                                              Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "9      40            40              36              36                   40          0.3          33           36                  32                     32                      \"Janus\" - Immobilienmanagement und 
+Consulting GmbH                                                        Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "10     59            58              53              52                   59          0.3          28           31                  31                     31                      \"Jungbrunnen\" Grundstücks- und Anla
+gegesellschaft für Heilbadwesen GmbH                                   Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "11     33            33              32              32                   33          0.3          29           30                  24                     24                      \"Kuckucksbähnel\" Bahnbetriebs GmbH 
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "12     35            35              35              35                   35          0.3          32           36                  32                     32                      \"Niedersächsische Landesversorgungsr
+ücklage\"                                                              Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "13     34            34              33              32                   34          0.3          32           33                  36                     36                      \"Pensionsfonds der Stadt Braunschwei
+g\"                                                                    Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "14     31            30              30              28                   31          0.4          42           43                  29                     29                      \"Rhein-Nahe Nahverkehrsverbund GmbH\
+"                                                                      Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "15     42            41              39              38                   42          0.4          40           47                  41                     41                      \"Seniorendienstleistungs gemeinnützi
+ge GmbH Gersprenz\"                                                    Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "16     59            59              51              51                   59          0.3          37           42                  36                     40                      \"Sport- und Freizeitanlagen Woltersd
+orf\"  Eigenbetrieb der Gemeinde Woltersdorf                           Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "17     72            71              64              64                   72          0.3          31           39                  32                     32                      \"Windpark Jöhstadt GmbH\" Gesellscha
+ft zur Nutzung rationeller und erneuerbaren Energien                   Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "18     94            93              84              83                   94          0.3          30           42                  26                     26                      \"Wohnen im Süden Rheinhessens\" Wohn
+ungsbau- und Immobilienverwaltungsgesellschaft der Verbandsgemeinde Monsheim mbH Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "19     27            26              26              25                   27          0.4          44           47                  45                     45                      \"die Stadtreiniger\"                
+                                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "20     40            39              38              36                   40          0.3          27           31                  32                     32                      (KSR) Kommunale Servicebetriebe Reckl
+inghausen                                                            Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "21     41            40              38              36                   41          0.3          34           36                  34                     34                      (OWAS) Odenwälder Wasser- und Abwasse
+r-Service GmbH                                                       Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "22     55            55              48              47                   55          0.3          25           33                  29                     29                      1. HIM Hamburgische Immobiliengesells
+chaft für Museen mbH & Co. KG                                        Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "23     63            62              54              53                   63          0.3          25           31                  30                     30                      1. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "24     34            34              31              31                   34          0.3          28           31                  30                     30                      1. Stadtwerke Bielefeld Wind GmbH & C
+o. KG                                                                Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "25     36            36              33              33                   36          0.2          24           25                  29                     29                      1. Windpark Laubersreuth GmbH & Co. K
+G                                                                    Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "26     30            30              29              29                   30          0.3          33           36                  36                     36                      17er Oberlandenergie GmbH            
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "27     55            55              48              47                   55          0.3          25           33                  29                     29                      2. HIM Hamburgische Immobiliengesells
+chaft für Museen mbH & Co. KG                                        Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "28     63            62              54              53                   63          0.3          25           31                  30                     30                      2. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "29     63            62              54              53                   63          0.3          25           31                  30                     30                      3. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "30     63            62              54              53                   63          0.3          25           31                  30                     30                      4. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "31     36            32              36              31                   36          0.1          29           28                  26                     26                      AACHENER VERLAGSGESELLSCHAFT mbH     
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "32     36            31              36              30                   36          0.0          26           28                  29                     29                      ABAG AKTIENMARKT BETEILIGUNGS AG     
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "33     33            30              33              30                   33          0.2          23           35                  26                     26                      ABATUS Holding SE                    
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "34     36            34              36              34                   36          0.0          10           17                  10                     10                      ABB AG                               
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "35     33            33              32              32                   33          0.2          22           26                  22                     22                      ABB Automation GmbH                  
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "36     33            33              32              32                   33          0.2          25           29                  25                     25                      ABB Automation Products GmbH         
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "37     33            33              32              32                   33          0.3          26           28                  29                     29                      ABB Beteiligungsgesellschaft mbH     
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "38     32            32              30              30                   32          0.3          35           36                  38                     38                      Aachen-Münchener Lebensversicherung A
+G                                                                    Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "39     57            56              50              49                   57          0.3          32           39                  37                     37                      Aachener Gesellschaft für Innovation 
+und Technologietransfer mbH (AGIT)                                   Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "40     47            46              44              43                   47          0.3          32           36                  35                     35                      Aachener Grundvermögen Kapitalverwalt
+ungsgesellschaft mbH                                                 Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "41     41            40              38              37                   41          0.3          31           31                  29                     29                      Aachener Siedlungs- und Wohnungsgesel
+lschaft mbH                                                          Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "42     30            29              29              28                   30          0.4          40           42                  37                     37                      Aachener Stadion Beteiligungs GmbH   
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "43     28            27              28              27                   28          0.4          39           43                  39                     39                      Aachener Stadtbetrieb                
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "44     36            35              35              34                   36          0.4          39           42                  35                     35                      Aachener Straßenbahn- und Energievers
+orgungs-AG                                                           Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "45     35            35              33              33                   35          0.3          26           28                  27                     29                      Aachener Verkehrsverbund GmbH (AVV Gm
+bH)                                                                  Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "46     28            28              28              28                   28          0.3          30           32                  33                     33                      Aalberts Surface Treatment GmbH      
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "47     28            28              28              28                   28          0.3          31           35                  34                     34                      Aareal Beteiligungen AG              
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "48     29            28              29              28                   29          0.3          31           44                  35                     35                      Aareal Estate AG                     
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "49     33            32              33              32                   33          0.1          18           33                  22                     22                      Aareon AG                            
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "50     29            29              29              29                   29          0.3          31           39                  34                     34                      Aareon Deutschland GmbH              
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "51     38            38              36              36                   38          0.2          25           28                  25                     25                      AbfallWirtschaftsVerband Lippe -Zweck
+verband-                                                             Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "52     42            41              40              39                   42          0.3          33           34                  35                     35                      Abfallentsorgungsbetrieb des Hochsaue
+rlandkreises                                                         Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "53     31            31              30              30                   31          0.3          29           30                  29                     29                      Abfallwirtschaftsverband Chemnitz    
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "54     34            34              32              32                   34          0.3          29           31                  26                     26                      Abfallwirtschaftsverband Kreis Groß-G
+erau                                                                 Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "55     40            40              37              37                   40          0.3          34           39                  34                     36                      a.a.a. aktiengesellschaft allgemeine 
+anlageverwaltung                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "56     31            30              31              30                   31          0.2          23           29                  26                     26                      aap Implantate AG                    
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "57     32            32              32              32                   32          0.2          23           29                  23                     23                      ab ausblick hamburg gmbh             
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "58     31            29              30              29                   31          0.3          28           31                  31                     31                      aba z&b Schleifmaschinen GmbH        
+                                                                     Nordrhein-WestfalenFinanzministerium                                                                        \n",
+      "59     42            41              38              37                   42          0.2          22           29                  30                     30                      \"DER RHEINBERGER\" Besitzgesellschaf
+t mbH & Co.KG                                                          Republic of Italy                                                                                           \n",
+      "60     30            28              29              27                   30          0.2          24           29                  24                     24                      \"DER RHEINBERGER\" Verwaltungs-GmbH 
+                                                                       Republic of Italy                                                                                           \n",
+      "61     29            27              26              25                   29          0.2          24           29                  25                     25                      \"Der Radevormwalder\" Omnibus GmbH  
+                                                                       Republic of Italy                                                                                           \n",
+      "62     35            34              34              33                   35          0.2          28           29                  25                     25                      \"Eigenbetrieb Abwasser\" Stadt Witti
+chenau                                                                 Republic of Italy                                                                                           \n",
+      "63     24            23              24              23                   24          0.3          27           29                  24                     24                      \"Eigenbetrieb Großröhrsdorf\"       
+                                                                       Republic of Italy                                                                                           \n",
+      "64     31            30              27              26                   31          0.2          23           35                  29                     29                      \"Elstertal\" Infraprojekt GmbH  Gera
+                                                                       Republic of Italy                                                                                           \n",
+      "65     68            67              61              60                   68          0.2          17           29                  20                     20                      \"Haus am Karswald\" Wohnstätte zur F
+örderung und Pflege behinderter Menschen                               Republic of Italy                                                                                           \n",
+      "66     16            16              15              15                   16          0.2          25           27                  27                     27                      \"IWW Nord GmbH\"                    
+                                                                       Republic of Italy                                                                                           \n",
+      "67     53            51              49              47                   53          0.2          23           41                  22                     22                      \"ImmoDienst Uckermark\" Gesellschaft
+ mit beschränkter Haftung                                              Republic of Italy                                                                                           \n",
+      "68     43            43              39              38                   43          0.2          21           29                  19                     19                      \"Janus\" - Immobilienmanagement und 
+Consulting GmbH                                                        Republic of Italy                                                                                           \n",
+      "69     64            62              59              57                   64          0.2          23           35                  22                     22                      \"Jungbrunnen\" Grundstücks- und Anla
+gegesellschaft für Heilbadwesen GmbH                                   Republic of Italy                                                                                           \n",
+      "70     30            30              28              28                   30          0.2          20           29                  25                     25                      \"Kuckucksbähnel\" Bahnbetriebs GmbH 
+                                                                       Republic of Italy                                                                                           \n",
+      "71     38            38              38              38                   38          0.2          20           29                  25                     25                      \"Niedersächsische Landesversorgungsr
+ücklage\"                                                              Republic of Italy                                                                                           \n",
+      "72     33            33              31              31                   33          0.3          25           29                  19                     19                      \"Pensionsfonds der Stadt Braunschwei
+g\"                                                                    Republic of Italy                                                                                           \n",
+      "73     32            32              32              32                   32          0.2          19           29                  24                     24                      \"Rhein-Nahe Nahverkehrsverbund GmbH\
+"                                                                      Republic of Italy                                                                                           \n",
+      "74     49            47              47              45                   49          0.1          20           29                  24                     24                      \"Seniorendienstleistungs gemeinnützi
+ge GmbH Gersprenz\"                                                    Republic of Italy                                                                                           \n",
+      "75     70            69              64              63                   70          0.2          21           41                  20                     22                      \"Sport- und Freizeitanlagen Woltersd
+orf\"  Eigenbetrieb der Gemeinde Woltersdorf                           Republic of Italy                                                                                           \n",
+      "76     78            78              70              70                   78          0.2          17           29                  18                     18                      \"Windpark Jöhstadt GmbH\" Gesellscha
+ft zur Nutzung rationeller und erneuerbaren Energien                   Republic of Italy                                                                                           \n",
+      "77     105           105             96              96                   105         0.2          15           29                  17                     17                      \"Wohnen im Süden Rheinhessens\" Wohn
+ungsbau- und Immobilienverwaltungsgesellschaft der Verbandsgemeinde Monsheim mbH Republic of Italy                                                                                           \n",
+      "78     18            17              17              16                   18          0.2          22           24                  35                     35                      \"die Stadtreiniger\"                
+                                                                       Republic of Italy                                                                                           \n",
+      "79     39            38              36              36                   39          0.2          25           35                  30                     30                      (KSR) Kommunale Servicebetriebe Reckl
+inghausen                                                            Republic of Italy                                                                                           \n",
+      "80     46            46              43              41                   46          0.2          21           29                  25                     25                      (OWAS) Odenwälder Wasser- und Abwasse
+r-Service GmbH                                                       Republic of Italy                                                                                           \n",
+      "81     59            58              51              50                   59          0.2          22           41                  26                     26                      1. HIM Hamburgische Immobiliengesells
+chaft für Museen mbH & Co. KG                                        Republic of Italy                                                                                           \n",
+      "82     67            67              58              57                   67          0.2          15           29                  21                     21                      1. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Republic of Italy                                                                                           \n",
+      "83     37            36              32              31                   37          0.2          27           41                  29                     29                      1. Stadtwerke Bielefeld Wind GmbH & C
+o. KG                                                                Republic of Italy                                                                                           \n",
+      "84     33            33              28              28                   33          0.2          25           35                  27                     27                      1. Windpark Laubersreuth GmbH & Co. K
+G                                                                    Republic of Italy                                                                                           \n",
+      "85     22            21              20              19                   22          0.2          24           24                  24                     24                      17er Oberlandenergie GmbH            
+                                                                     Republic of Italy                                                                                           \n",
+      "86     59            58              51              50                   59          0.2          22           41                  26                     26                      2. HIM Hamburgische Immobiliengesells
+chaft für Museen mbH & Co. KG                                        Republic of Italy                                                                                           \n",
+      "87     67            67              58              57                   67          0.2          15           29                  21                     21                      2. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Republic of Italy                                                                                           \n",
+      "88     67            67              58              57                   67          0.2          15           29                  21                     21                      3. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Republic of Italy                                                                                           \n",
+      "89     67            67              58              57                   67          0.2          15           29                  21                     21                      4. IVFL Immobilienverwaltung für Fors
+chung und Lehre Hamburg GmbH & Co. KG                                Republic of Italy                                                                                           \n",
+      "90     31            28              29              25                   31          0.1          24           30                  29                     29                      AACHENER VERLAGSGESELLSCHAFT mbH     
+                                                                     Republic of Italy                                                                                           \n",
+      "91     30            28              28              25                   30          0.1          24           29                  29                     29                      ABAG AKTIENMARKT BETEILIGUNGS AG     
+                                                                     Republic of Italy                                                                                           \n",
+      "92     17            16              15              14                   17          0.2          24           24                  29                     29                      ABATUS Holding SE                    
+                                                                     Republic of Italy                                                                                           \n",
+      "93     16            14              15              13                   16          0.1          26           33                  17                     17                      ABB AG                               
+                                                                     Republic of Italy                                                                                           \n",
+      "94     17            17              16              16                   17          0.2          22           24                  28                     28                      ABB Automation GmbH                  
+                                                                     Republic of Italy                                                                                           \n",
+      "95     23            23              21              21                   23          0.2          22           29                  31                     31                      ABB Automation Products GmbH         
+                                                                     Republic of Italy                                                                                           \n",
+      "96     28            28              25              25                   28          0.2          24           30                  24                     24                      ABB Beteiligungsgesellschaft mbH     
+                                                                     Republic of Italy                                                                                           \n",
+      "97     34            34              32              32                   34          0.2          25           29                  26                     26                      Aachen-Münchener Lebensversicherung A
+G                                                                    Republic of Italy                                                                                           \n",
+      "98     63            61              57              55                   63          0.2          23           35                  21                     21                      Aachener Gesellschaft für Innovation 
+und Technologietransfer mbH (AGIT)                                   Republic of Italy                                                                                           \n",
+      "99     51            50              48              47                   51          0.2          22           41                  22                     22                      Aachener Grundvermögen Kapitalverwalt
+ungsgesellschaft mbH                                                 Republic of Italy                                                                                           \n",
+      "100    43            42              39              38                   43          0.2          22           29                  22                     22                      Aachener Siedlungs- und Wohnungsgesel
+lschaft mbH                                                          Republic of Italy                                                                                           \n",
+      "101    29            29              27              27                   29          0.2          24           35                  24                     24                      Aachener Stadion Beteiligungs GmbH   
+                                                                     Republic of Italy                                                                                           \n",
+      "102    19            19              18              18                   19          0.2          21           24                  26                     26                      Aachener Stadtbetrieb                
+                                                                     Republic of Italy                                                                                           \n",
+      "103    43            42              40              39                   43          0.1          22           24                  23                     23                      Aachener Straßenbahn- und Energievers
+orgungs-AG                                                           Republic of Italy                                                                                           \n",
+      "104    36            35              33              32                   36          0.2          21           29                  22                     24                      Aachener Verkehrsverbund GmbH (AVV Gm
+bH)                                                                  Republic of Italy                                                                                           \n",
+      "105    26            26              24              24                   26          0.2          25           35                  29                     29                      Aalberts Surface Treatment GmbH      
+                                                                     Republic of Italy                                                                                           \n",
+      "106    21            18              18              16                   21          0.2          35           35                  35                     35                      Aareal Beteiligungen AG              
+                                                                     Republic of Italy                                                                                           \n",
+      "107    15            15              13              13                   15          0.3          36           38                  30                     30                      Aareal Estate AG                     
+                                                                     Republic of Italy                                                                                           \n",
+      "108    15            14              14              13                   15          0.2          38           33                  23                     23                      Aareon AG                            
+                                                                     Republic of Italy                                                                                           \n",
+      "109    21            20              19              18                   21          0.2          30           35                  30                     30                      Aareon Deutschland GmbH              
+                                                                     Republic of Italy                                                                                           \n",
+      "110    39            38              38              37                   39          0.2          26           35                  30                     30                      AbfallWirtschaftsVerband Lippe -Zweck
+verband-                                                             Republic of Italy                                                                                           \n",
+      "111    41            41              40              40                   41          0.2          24           35                  24                     24                      Abfallentsorgungsbetrieb des Hochsaue
+rlandkreises                                                         Republic of Italy                                                                                           \n",
+      "112    28            28              27              27                   28          0.3          32           35                  28                     28                      Abfallwirtschaftsverband Chemnitz    
+                                                                     Republic of Italy                                                                                           \n",
+      "113    36            35              34              34                   36          0.2          28           35                  32                     32                      Abfallwirtschaftsverband Kreis Groß-G
+erau                                                                 Republic of Italy                                                                                           \n",
+      "114    46            45              44              43                   46          0.2          23           41                  20                     22                      a.a.a. aktiengesellschaft allgemeine 
+anlageverwaltung                                                     Republic of Italy                                                                                           \n",
+      "115    16            16              13              13                   16          0.3          29           29                  29                     29                      aap Implantate AG                    
+                                                                     Republic of Italy                                                                                           \n",
+      "116    18            18              16              16                   18          0.3          34           41                  34                     34                      ab ausblick hamburg gmbh             
+                                                                     Republic of Italy                                                                                           \n",
+      "117    25            25              22              22                   25          0.2          22           29                  30                     30                      aba z&b Schleifmaschinen GmbH        
+                                                                     Republic of Italy                                                                                           \n"
+     ]
+    }
+   ],
+   "source": [
+    "fn = tmpdirname.name + '/' + baseDataDir + abgleich_pkg.abgleich.tablename + '.csv'\n",
+    "import csv\n",
+    "csv_f = csv.reader(open(fn))\n",
+    "for row in csv_f:\n",
+    "    print('{:<5}  {:<12}  {:<15} {:<15} {:<20} {:<11} {:<12} {:<12} {:<19} {:<22} {:<23} {:<105} {:<105}   '.format(*row) )\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# DONE!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
